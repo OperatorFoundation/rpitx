@@ -214,6 +214,10 @@ int main(int argc, char * argv[])
 	if (argc < 4)
 	{
 		printf("usage: ./morse freq(Hz) rate(dits) MSG(\"quoted\")\n");
+		printf(argc);
+		printf("%d", atof(argv[1]));
+		atof("%d", atof(argv[2]));
+		print(argv[3]);
 		exit(0);
 	}
 
