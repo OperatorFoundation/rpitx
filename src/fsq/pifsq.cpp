@@ -59,9 +59,7 @@
 unsigned long freq = 0;//7105350;   // Base freq is 1350 Hz higher than dial freq in USB
 uint8_t cur_tone = 0;
 static uint8_t crc8_table[256];
-char callsign[10] = "F5OEO";
 char tx_buffer[40];
-uint8_t callsign_crc;
 int FileText;
 ngfmdmasync *fsqmod=NULL;
 int FifoSize=1000; 
@@ -245,9 +243,11 @@ void encode_char(int ch)
 				
 				// Generate 2nd tone
 				encode_tone(vcode2);
-			}           
-			break; // We've found and transmitted the char,
+			}
+
+            // We've found and transmitted the char,
 			// so exit the for loop
+            break;
 		}
 	}
 }
@@ -261,23 +261,21 @@ void encode_tone(uint8_t tone)
 	int count=0;   
 	while(count<1000)
 	{
-			int Available=fsqmod->GetBufferAvailable();
-			if(Available>FifoSize/2)
-			{	
-					int Index=fsqmod->GetUserMemIndex();			
-					for(int j=0;j<Available;j++)
-					{
-							fsqmod->SetFrequencySample(Index+j,1000 + (cur_tone * TONE_SPACING*0.001));
-							count++;
-							
-					}
-									
-			}
-			else
-				usleep(100);	
-		
-	
-	}
+        int Available=fsqmod->GetBufferAvailable();
+        if(Available>FifoSize/2)
+        {
+            int Index=fsqmod->GetUserMemIndex();
+            for(int j=0;j<Available;j++)
+            {
+                    fsqmod->SetFrequencySample(Index+j,1000 + (cur_tone * TONE_SPACING*0.001));
+                    count++;
+
+            }
+
+        }
+        else
+            usleep(100);
+    }
 			
 	//TO DO FREQUENCY PI si5351.set_freq((freq * 100) + (cur_tone * TONE_SPACING), 0, SI5351_CLK0);
 }
@@ -353,17 +351,20 @@ uint8_t crc8(char * text)
 int main(int argc, char **argv)
 {
 	char *sText;
-	if (argc > 2) 
+    char *callsign;
+    uint8_t callsign_crc;
+
+	if (argc > 3)
 	{
-		sText=(char *)argv[1];
+        callsign=(char *)argv[1];
+		sText=(char *)argv[2];
 		//FileText = open(argv[1], O_RDONLY);
 
-		
-		Frequency = atof(argv[2]);
+		Frequency = atof(argv[3]);
 	}
 	else
 	{
-		printf("usage : pifsq StringToTransmit Frequency(in Hz)\n");
+		printf("usage : pifsq <CallSign> <StringToTransmit> <Frequency(in Hz)>\n");
 		exit(0);
 	}
   

@@ -6,3 +6,6 @@
 /pisstv
 /rpitx
 *.o
+.idea/vcs.xml
+.idea/rpitx.iml
+.idea/modules.xml
